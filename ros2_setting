@@ -1,0 +1,47 @@
+ouster의 sensor.launch.xml에서 아래 인수 변경 필요
+timestamp_mode
+point_cloud_frame : os_sensor
+
+** BUFFER SIZE **
+
+https://www.teledynevisionsolutions.com/support/support-center/troubleshooting/iis/lost-ethernet-data-packets-on-linux-systems/
+
+cat /proc/sys/net/core/rmem_max
+cat /proc/sys/net/core/rmem_default
+
+  ** 일시적 적용 ** (적당해 보이는거 = 7000000, 10mb = 10485760)
+  sudo sysctl -w net.core.rmem_max=10485760
+  sudo sysctl -w net.core.rmem_default=10485760
+  sudo sysctl -w net.ipv4.tcp_rmem="4096 87380 10485760"
+
+** topic 안될 때 **
+명령어 마지막에 " --no-daemon " 붙이기
+
+** ros2 bag 파일 trim **
+ros2bag_editor 실행
+  
+  ** metadata 다시 만들기 **
+  ros2 bag reindex -s sqlite3 ./{db3 path}
+
+
+** 센서들
+
+  **ouster 라이다
+  rosdep install --from-paths ./src/ouster-ros/ -y --ignore-src  
+  
+  colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release --packages-select ouster_ros ouster_sensor_msgs
+
+
+  **flir 카메라
+  rosdep install --from-paths ./src/flir_camera_driver/ --ignore-src
+
+  colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_EXPORT_COMPILE_COMMANDS=ON --packages-select spinnaker_camera_driver spinnaker_synchronized_camera_driver flir_camera_msgs flir_camera_description
+
+  **imu
+  rosdep install --from-paths ./src/microstrain_inertial/ -i -r -y
+
+  colcon build --packages-select microstrain_inertial_driver microstrain_inertial_msgs microstrain_inretial_examples microstrain_inertial_rqt microstrain_inertial_description
+  
+  **axis 카메라
+  colcon build --symlink-install --packages-select camera_info_manager_py ptz_action_server_msgs axis_camera axis_description axis_msgs
+
