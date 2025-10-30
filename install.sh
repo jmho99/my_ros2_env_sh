@@ -112,6 +112,12 @@ fi
 echo "Custom environment (${ENV_FILE}) installed."
 echo "Restart terminal to apply."
 
-#Remove install.sh
-#echo "Removing installer: $0"
-#rm -- "$0"
+# Remove the installer directory
+echo "Removing installer directory: $SCRIPT_DIR"
+
+# safety: do not allow removal of ~, /, or empty path
+if [[ -n "$SCRIPT_DIR" && "$SCRIPT_DIR" != "$HOME" && "$SCRIPT_DIR" != "/" ]]; then
+  rm -rf -- "$SCRIPT_DIR"
+else
+  echo "Safety check failed — not deleting: $SCRIPT_DIR"
+fi
