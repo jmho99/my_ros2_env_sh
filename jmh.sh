@@ -1,7 +1,7 @@
 #ROS2 setting
 source /opt/ros/humble/setup.bash
 source ~/ROS2/sensor_ws/install/setup.bash
-echo "complete sourcing ros2 && sensor_ws"
+echo "complete sourcing ros2"
 export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 echo $RMW_IMPLEMENTATION
 cat /proc/sys/net/core/rmem_max
